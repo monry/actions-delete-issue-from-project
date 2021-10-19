@@ -20,8 +20,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Add Issue to Project
-      id: add-issue-to-project
+    - name: Delete Issue from Project
+      id: delete-issue-from-project
       uses: ./
       with:
         github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
@@ -30,4 +30,4 @@ jobs:
         issue-id: ${{ github.event.inputs.issue-id }}
     - name: Output result
       run: |
-        echo '${{ steps.add-issue-to-project.outputs.added-project-item-id }}'
+        echo '${{ steps.delete-issue-from-project.outputs.deleted-project-item-id }}'
