@@ -1,6 +1,6 @@
 name: "Delete Issue from Project"
 author: 'Tetsuya Mori'
-description: 'Delete GitHub Issues from GitHub Projects (Beta)'
+description: 'Delete GitHub Issues from GitHub Projects'
 branding:
   icon: minus-square
   color: red
@@ -44,13 +44,13 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - uses: monry/actions-get-project-id@v1
+    - uses: monry/actions-get-project-id@v2
       id: get-project-id
       with:
         github-token: ${{ inputs.github-token }}
         project-owner: ${{ inputs.project-owner }}
         project-number: ${{ inputs.project-number }}
-    - uses: monry/actions-get-project-item-id@v1
+    - uses: monry/actions-get-project-item-id@v2
       id: get-project-item-id
       with:
         github-token: ${{ inputs.github-token }}
@@ -86,21 +86,18 @@ runs:
 
           const variables = {
             projectId: projectId,
-            projectItemId: projectItemId,
-            headers: {
-              'GraphQL-Features': 'projects_next_graphql'
-            }
+            projectItemId: projectItemId
           };
           const mutation = `
             mutation($projectId: ID!, $projectItemId: ID!) {
-              deleteProjectNextItem(input: {projectId: $projectId, itemId: $projectItemId}) {
+              deleteProjectV2Item(input: {projectId: $projectId, itemId: $projectItemId}) {
                 deletedItemId
               }
             }
           `;
 
           var result = await github.graphql(mutation, variables);
-          if (result && result.deleteProjectNextItem) {
-            return result.deleteProjectNextItem.deletedItemId;
+          if (result && result.deleteProjectV2Item) {
+            return result.deleteProjectV2Item.deletedItemId;
           }
           return '';
