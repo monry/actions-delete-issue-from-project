@@ -74,7 +74,7 @@ runs:
         script: |
           var projectId = '${{ inputs.project-id }}' || '${{ steps.get-project-id.outputs.project-id }}';
           if (!projectId) {
-            core.setOutput('error', 'Project does not found');
+            core.setOutput('error', 'Project does not found.');
             return;
           }
           var projectItemId = '${{ inputs.project-item-id }}' || '${{ steps.get-project-item-id.outputs.project-item-id }}';
