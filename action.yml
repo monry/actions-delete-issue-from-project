@@ -40,18 +40,23 @@ inputs:
 outputs:
   deleted-project-item-id:
     description: 'Project Item Id that deleted from project.'
-    value: ${{ steps.delete-issue-from-project.outputs.result }}
+    value: ${{ steps.delete-issue-from-project.outputs.deleted-project-item-id }}
+  error:
+    description: 'Error message.'
+    value: ${{ steps.delete-issue-from-project.outputs.error }}
 runs:
   using: "composite"
   steps:
     - uses: monry/actions-get-project-id@v2
       id: get-project-id
+      if: inputs.project-id == ''
       with:
         github-token: ${{ inputs.github-token }}
         project-owner: ${{ inputs.project-owner }}
         project-number: ${{ inputs.project-number }}
     - uses: monry/actions-get-project-item-id@v2
       id: get-project-item-id
+      if: inputs.project-item-id == ''
       with:
         github-token: ${{ inputs.github-token }}
         project-id: ${{ inputs.project-id }}
@@ -61,27 +66,21 @@ runs:
         issue-repository: ${{ inputs.issue-repository }}
         issue-number: ${{ inputs.issue-number }}
     - name: delete Issue from Project
-      uses: actions/github-script@v5
+      uses: actions/github-script@v6
       id: delete-issue-from-project
       with:
         result-encoding: string
         github-token: ${{ inputs.github-token }}
         script: |
-          // Cannot use `if` at steps in composite actions, so validate here.
-          if ('${{ inputs.project-id }}'.length == 0 && '${{ inputs.project-owner }}'.length == 0 && ${{ inputs.project-number }} <= 0) {
-            return '';
-          }
-          if ('${{ inputs.project-item-id }}'.length == 0 && '${{ inputs.issue-id }}'.length == 0 && ${{ inputs.issue-number }} <= 0 && '${{ inputs.issue-repository }}'.length == 0) {
-            return '';
-          }
-
           var projectId = '${{ inputs.project-id }}' || '${{ steps.get-project-id.outputs.project-id }}';
           if (!projectId) {
-            return '';
+            core.setOutput('error', 'Project does not found');
+            return;
           }
           var projectItemId = '${{ inputs.project-item-id }}' || '${{ steps.get-project-item-id.outputs.project-item-id }}';
           if (!projectItemId) {
-            return '';
+            core.setOutput('error', 'Project Item does not found.');
+            return;
           }
 
           const variables = {
@@ -96,8 +95,18 @@ runs:
             }
           `;
 
-          var result = await github.graphql(mutation, variables);
-          if (result && result.deleteProjectV2Item) {
-            return result.deleteProjectV2Item.deletedItemId;
+          let deletedProjectV2ItemId = null;
+          try {
+            var result = await github.graphql(mutation, variables);
+            if (result && result.deleteProjectV2Item) {
+              deletedProjectV2ItemId = result.deleteProjectV2Item.deletedItemId;
+            }
+          } catch (error) {
+            if (error.errors && error.errors.length > 0) {
+              core.setOutput('error', error.errors[0].message);
+              return;
+            }
           }
-          return '';
+
+          core.setOutput('deleted-project-item-id', deletedProjectV2ItemId);
+          return;
