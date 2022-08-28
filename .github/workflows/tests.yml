@@ -100,7 +100,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Add Project Item
       id: add-issue-to-project
-      uses: monry/actions-add-issue-to-project@develop # FIXME
+      uses: monry/actions-add-issue-to-project@v2
       with:
         github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         project-id: 'PVT_kwHOAAzNIc4AFSrF'
