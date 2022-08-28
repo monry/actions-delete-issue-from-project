@@ -1,4 +1,4 @@
-# Delete GitHub Issues from GitHub Projects (Beta)
+# Delete GitHub Issues from GitHub Projects
 
 Delete issue from project.
 
@@ -10,7 +10,7 @@ Delete issue from project.
 - uses: monry/actions-delete-issue-from-project@v1
   with:
     # Personal Access Token that with `repo`, `org:read` and `org:write` are granted.
-    github-token: ${{ secrets.PAT_PROJECT_NEXT }}
+    github-token: ${{ secrets.PAT_PROJECT_V2 }}
     project-owner: 'monry'
     project-number: 1
     issue-repository: 'monry/awesome-repository'
@@ -23,8 +23,8 @@ Delete issue from project.
 - uses: monry/actions-delete-issue-from-project@v1
   with:
     # Personal Access Token that with `repo`, `org:read` and `org:write` are granted.
-    github-token: ${{ secrets.PAT_PROJECT_NEXT }}
-    project-id: 'PN_xxxxxxxxxxxxxx'
+    github-token: ${{ secrets.PAT_PROJECT_V2 }}
+    project-id: 'PVT_xxxxxxxxxxxxxx'
     issue-id: ${{ github.event.issue.node_id }}
 ```
 
@@ -40,7 +40,7 @@ For security purposes, it is recommended to register Personal Access Token as Se
 
 Node ID of project.
 
-This value can obtain from [monry/actions-get-project-id@v1](https://github.com/marketplace/actions/get-project-id).<br />
+This value can obtain from [monry/actions-get-project-id@v2](https://github.com/marketplace/actions/get-project-id).<br />
 See also: [monry/actions-get-project-id](https://github.com/monry/actions-get-project-id) repos.
 
 ## `project-owner`
@@ -62,6 +62,9 @@ The project number is the number shown in the URL or list of projects.
 ## `project-item-id`
 
 Node ID of ProjectItem.
+
+This value can obtain from [monry/actions-get-project-item-id@v2](https://github.com/marketplace/actions/get-project-item-id).<br />
+See also: [monry/actions-get-project-item-id](https://github.com/monry/actions-get-project-item-id) repos.
 
 ## `issue-id`
 
@@ -88,10 +91,10 @@ Number of issue.
 Deleted Project Item Id stores into output variable named `deleted-project-item-id`.
 
 ```yaml
-- uses: monry/actions-delete-issue-from-project@v1
+- uses: monry/actions-delete-issue-from-project@v2
   id: delete-issue-from-project # requires `id` to refer output values with after steps
   with:
-    github-token: ${{ secrets.PAT_PROJECT_NEXT }}
+    github-token: ${{ secrets.PAT_PROJECT_V2 }}
     project-owner: 'monry'
     project-number: 1
     issue-repository: 'monry/awesome-repository'
@@ -99,3 +102,7 @@ Deleted Project Item Id stores into output variable named `deleted-project-item-
 - run: |
     echo '${{ steps.delete-issue-from-project.outputs.deleted-project-item-id }}'
 ```
+
+## `error`
+
+Set error message if some error occured.
