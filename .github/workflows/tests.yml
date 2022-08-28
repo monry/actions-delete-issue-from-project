@@ -132,7 +132,7 @@ jobs:
         issue-id: 'I_kwDOGPivoM5QqluG' # Test Fixture 05
     - name: Assert
       run: |
-        [[ '${{ steps.delete-issue-from-project.outputs.error }}' = 'Project does not found.' ]]
+        [[ '${{ steps.delete-issue-from-project.outputs.error }}' = 'Project Item does not found.' ]]
   test-project-not-found-with-number:
     name: Project specified by number does not found
     runs-on: ubuntu-latest
@@ -163,7 +163,7 @@ jobs:
         issue-id: 'I_'
     - name: Assert
       run: |
-        [[ '${{ steps.delete-issue-from-project.outputs.error }}' = 'Issue does not found.' ]]
+        [[ '${{ steps.delete-issue-from-project.outputs.error }}' = 'Project Item does not found.' ]]
   test-issue-not-found-with-number:
     name: Issue specified by number does not found
     runs-on: ubuntu-latest
@@ -179,7 +179,7 @@ jobs:
         issue-number: -1
     - name: Assert
       run: |
-        [[ '${{ steps.delete-issue-from-project.outputs.error }}' = 'Issue does not found.' ]]
+        [[ '${{ steps.delete-issue-from-project.outputs.error }}' =~ 'Project Item does not found.' ]]
   test-project-item-not-found:
     name: Project Item specified by id does not found
     runs-on: ubuntu-latest
@@ -194,4 +194,4 @@ jobs:
         project-item-id: 'PVTI_'
     - name: Assert
       run: |
-        [[ '${{ steps.delete-issue-from-project.outputs.error }}' = 'Project Item does not found.' ]]
+        [[ '${{ steps.delete-issue-from-project.outputs.error }}' =~ ^Could\ not\ resolve\ to\ a\ node\ with\ the\ global\ id\ of ]]
