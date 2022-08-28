@@ -1,0 +1,195 @@
+name: Tests
+on:
+  workflow_call:
+    secrets:
+      PERSONAL_ACCESS_TOKEN:
+        required: true
+jobs:
+  set-up:
+    name: SetUp tests
+    uses: ./.github/workflows/tests-setup.yml
+    strategy:
+      matrix:
+        issue-id:
+        - 'I_kwDOGPivoM5QqiF-' # Test Fixture 01
+        - 'I_kwDOGPivoM5QqiG3' # Test Fixture 02
+        - 'I_kwDOGPivoM5QqiIZ' # Test Fixture 03
+        - 'I_kwDOGPivoM5QqiI6' # Test Fixture 04
+    secrets: inherit
+    with:
+      issue-id: ${{ matrix.issue-id }}
+  # Normal
+  test-project-id-issue-id:
+    name: Specify id of project and id of issue
+    runs-on: ubuntu-latest
+    needs:
+    - set-up
+    steps:
+    - uses: actions/checkout@v2
+    - name: Delete Project Item
+      id: delete-issue-from-project
+      uses: ./
+      with:
+        github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        project-id: 'PVT_kwHOAAzNIc4AFSrF'
+        issue-id: 'I_kwDOGPivoM5QqiF-' # Test Fixture 01
+    - name: Assert
+      run: |
+        [[ '${{ steps.delete-issue-from-project.outputs.deleted-project-item-id }}' =~ ^PVTI_[a-zA-Z0-9_-]*$ ]]
+  test-project-id-issue-number:
+    name: Specify id of project and number of issue
+    runs-on: ubuntu-latest
+    needs:
+    - set-up
+    steps:
+    - uses: actions/checkout@v2
+    - name: Delete Project Item
+      id: delete-issue-from-project
+      uses: ./
+      with:
+        github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        project-id: 'PVT_kwHOAAzNIc4AFSrF'
+        issue-repository: 'monry/actions-delete-issue-from-project'
+        issue-number: 9 # Test Fixture 02
+    - name: Assert
+      run: |
+        [[ '${{ steps.delete-issue-from-project.outputs.deleted-project-item-id }}' =~ ^PVTI_[a-zA-Z0-9_-]*$ ]]
+  test-project-number-issue-id:
+    name: Specify number of project and id of issue
+    runs-on: ubuntu-latest
+    needs:
+    - set-up
+    steps:
+    - uses: actions/checkout@v2
+    - name: Delete Project Item
+      id: delete-issue-from-project
+      uses: ./
+      with:
+        github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        project-owner: 'monry'
+        project-number: 3
+        issue-id: 'I_kwDOGPivoM5QqiIZ' # Test Fixture 03
+    - name: Assert
+      run: |
+        [[ '${{ steps.delete-issue-from-project.outputs.deleted-project-item-id }}' =~ ^PVTI_[a-zA-Z0-9_-]*$ ]]
+  test-project-number-issue-number:
+    name: Specify number of project and number of issue
+    runs-on: ubuntu-latest
+    needs:
+    - set-up
+    steps:
+    - uses: actions/checkout@v2
+    - name: Delete Project Item
+      id: delete-issue-from-project
+      uses: ./
+      with:
+        github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        project-owner: 'monry'
+        project-number: 3
+        issue-repository: 'monry/actions-delete-issue-from-project'
+        issue-number: 11 # Test Fixture 04
+    - name: Assert
+      run: |
+        [[ '${{ steps.delete-issue-from-project.outputs.deleted-project-item-id }}' =~ ^PVTI_[a-zA-Z0-9_-]*$ ]]
+  test-project-item-id:
+    name: Specify project item id
+    runs-on: ubuntu-latest
+    outputs:
+      deleted-project-item-id: ${{ steps.delete-issue-from-project.outputs.deleted-project-item-id }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Add Project Item
+      id: add-issue-to-project
+      uses: monry/actions-add-issue-to-project@develop # FIXME
+      with:
+        github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        project-id: 'PVT_kwHOAAzNIc4AFSrF'
+        issue-id: 'I_kwDOGPivoM5QqiJ_' # Test Fixture 05
+    - name: Delete Project Item
+      id: delete-issue-from-project
+      uses: ./
+      with:
+        github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        project-id: 'PVT_kwHOAAzNIc4AFSrF'
+        project-item-id: ${{ steps.add-issue-to-project.outputs.added-project-item-id }}
+    - name: Assert
+      run: |
+        [[ '${{ steps.delete-issue-from-project.outputs.deleted-project-item-id }}' = '${{ steps.add-issue-to-project.outputs.added-project-item-id }}' ]]
+  # Abnormal
+  test-project-not-found-with-id:
+    name: Project specified by id does not found
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Delete Project Item
+      id: delete-issue-from-project
+      uses: ./
+      with:
+        github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        project-id: 'PVT_'
+        issue-id: 'I_kwDOGPivoM5QqluG' # Test Fixture 05
+    - name: Assert
+      run: |
+        [[ '${{ steps.delete-issue-from-project.outputs.error }}' = 'Project Item does not found.' ]]
+  test-project-not-found-with-number:
+    name: Project specified by number does not found
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Delete Project Item
+      id: delete-issue-from-project
+      uses: ./
+      with:
+        github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        project-owner: 'monry'
+        project-number: -1
+        issue-id: 'I_kwDOGPivoM5QqluG' # Test Fixture 05
+    - name: Assert
+      run: |
+        [[ '${{ steps.delete-issue-from-project.outputs.error }}' = 'Project does not found.' ]]
+  test-issue-not-found-with-id:
+    name: Issue specified by id does not found
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Delete Project Item
+      id: delete-issue-from-project
+      uses: ./
+      with:
+        github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        project-id: 'PVT_kwHOAAzNIc4AFSrF'
+        issue-id: 'I_'
+    - name: Assert
+      run: |
+        [[ '${{ steps.delete-issue-from-project.outputs.error }}' = 'Project Item does not found.' ]]
+  test-issue-not-found-with-number:
+    name: Issue specified by number does not found
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Delete Project Item
+      id: delete-issue-from-project
+      uses: ./
+      with:
+        github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        project-id: 'PVT_kwHOAAzNIc4AFSrF'
+        issue-repository: 'monry/actions-delete-issue-from-project'
+        issue-number: -1
+    - name: Assert
+      run: |
+        [[ '${{ steps.delete-issue-from-project.outputs.error }}' =~ 'Project Item does not found.' ]]
+  test-project-item-not-found:
+    name: Project Item specified by id does not found
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Delete Project Item
+      id: delete-issue-from-project
+      uses: ./
+      with:
+        github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        project-id: 'PVT_kwHOAAzNIc4AFSrF'
+        project-item-id: 'PVTI_'
+    - name: Assert
+      run: |
+        [[ '${{ steps.delete-issue-from-project.outputs.error }}' =~ ^Could\ not\ resolve\ to\ a\ node\ with\ the\ global\ id\ of ]]
