@@ -94,8 +94,6 @@ jobs:
   test-project-item-id:
     name: Specify project item id
     runs-on: ubuntu-latest
-    needs:
-    - set-up
     outputs:
       deleted-project-item-id: ${{ steps.delete-issue-from-project.outputs.deleted-project-item-id }}
     steps:
