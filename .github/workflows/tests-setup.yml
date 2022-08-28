@@ -1,0 +1,22 @@
+name: Tests SetUp
+on:
+  workflow_call:
+    secrets:
+      PERSONAL_ACCESS_TOKEN:
+        required: true
+    inputs:
+      issue-id:
+        required: true
+        type: string
+jobs:
+  add-project-item:
+    name: Add project item
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Add Project Item
+      uses: monry/actions-add-issue-to-project@develop # FIXME
+      with:
+        github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        project-id: 'PVT_kwHOAAzNIc4AFSrF'
+        issue-id: ${{ inputs.issue-id }}
