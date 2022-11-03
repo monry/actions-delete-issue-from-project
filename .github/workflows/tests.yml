@@ -25,7 +25,7 @@ jobs:
     needs:
     - set-up
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkuot@v3
     - name: Delete Project Item
       id: delete-issue-from-project
       uses: ./
@@ -42,7 +42,7 @@ jobs:
     needs:
     - set-up
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkuot@v3
     - name: Delete Project Item
       id: delete-issue-from-project
       uses: ./
@@ -60,7 +60,7 @@ jobs:
     needs:
     - set-up
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkuot@v3
     - name: Delete Project Item
       id: delete-issue-from-project
       uses: ./
@@ -78,7 +78,7 @@ jobs:
     needs:
     - set-up
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkuot@v3
     - name: Delete Project Item
       id: delete-issue-from-project
       uses: ./
@@ -97,7 +97,7 @@ jobs:
     outputs:
       deleted-project-item-id: ${{ steps.delete-issue-from-project.outputs.deleted-project-item-id }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkuot@v3
     - name: Add Project Item
       id: add-issue-to-project
       uses: monry/actions-add-issue-to-project@v2
@@ -120,7 +120,7 @@ jobs:
     name: Project specified by id does not found
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkuot@v3
     - name: Delete Project Item
       id: delete-issue-from-project
       uses: ./
@@ -135,7 +135,7 @@ jobs:
     name: Project specified by number does not found
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkuot@v3
     - name: Delete Project Item
       id: delete-issue-from-project
       uses: ./
@@ -151,7 +151,7 @@ jobs:
     name: Issue specified by id does not found
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkuot@v3
     - name: Delete Project Item
       id: delete-issue-from-project
       uses: ./
@@ -166,7 +166,7 @@ jobs:
     name: Issue specified by number does not found
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkuot@v3
     - name: Delete Project Item
       id: delete-issue-from-project
       uses: ./
@@ -182,7 +182,7 @@ jobs:
     name: Project Item specified by id does not found
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkuot@v3
     - name: Delete Project Item
       id: delete-issue-from-project
       uses: ./
