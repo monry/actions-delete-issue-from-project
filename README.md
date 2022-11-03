@@ -7,9 +7,9 @@ Delete issue from project.
 ## Specify parameters without id
 
 ```yaml
-- uses: monry/actions-delete-issue-from-project@v1
+- uses: monry/actions-delete-issue-from-project@v2
   with:
-    # Personal Access Token that with `repo`, `org:read` and `org:write` are granted.
+    # Personal Access Token that with `repo`, `project`, `org:read` and `org:write` are granted.
     github-token: ${{ secrets.PAT_PROJECT_V2 }}
     project-owner: 'monry'
     project-number: 1
@@ -20,9 +20,9 @@ Delete issue from project.
 ## Specify parameters with id
 
 ```yaml
-- uses: monry/actions-delete-issue-from-project@v1
+- uses: monry/actions-delete-issue-from-project@v2
   with:
-    # Personal Access Token that with `repo`, `org:read` and `org:write` are granted.
+    # Personal Access Token that with `repo`, `project`, `org:read` and `org:write` are granted.
     github-token: ${{ secrets.PAT_PROJECT_V2 }}
     project-id: 'PVT_xxxxxxxxxxxxxx'
     issue-id: ${{ github.event.issue.node_id }}
@@ -32,7 +32,7 @@ Delete issue from project.
 
 ## `github-token`
 
-This action requires Personal Access Token that `repo`, `org:read` and `org:write` are granted.
+This action requires Personal Access Token that `repo`, `project`, `org:read` and `org:write` are granted.
 
 For security purposes, it is recommended to register Personal Access Token as Secrets.
 
