@@ -13,7 +13,7 @@ jobs:
     name: Add project item
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkuot@v3
+    - uses: actions/checkout@v3
     - name: Add Project Item
       uses: monry/actions-add-issue-to-project@v2
       with:
